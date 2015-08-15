@@ -53,6 +53,10 @@ type wifi struct {
 	Password string     `json:"password"`
 }
 
+func (w *wifi) QRText() string {
+	return fmt.Sprintf("WIFI:S:%s;:T:%s;P:%s;;", w.SSID, w.Enc, w.Password)
+}
+
 var dbmu sync.RWMutex
 var db = make(map[string]wifi)
 
@@ -113,7 +117,7 @@ func qrHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	text := fmt.Sprintf("WIFI:S:%s;:T:%s;P:%s;;", wifi.SSID, wifi.Enc, wifi.Password)
+	text := wifi.QRText()
 
 	code, err := qr.Encode(text, qr.Q)
 	if err != nil {
