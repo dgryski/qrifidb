@@ -3,9 +3,12 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -124,8 +127,18 @@ func qrHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+
+	port := flag.Int("p", 8080, "port")
+
+	flag.Parse()
+
+	if p := os.Getenv("PORT"); p != "" {
+		*port, _ = strconv.Atoi(p)
+	}
+
 	http.HandleFunc("/qr/", qrHandler)
 	http.HandleFunc("/wifi", wifiHandler)
-	log.Fatalln(http.ListenAndServe(":8081", nil))
 
+	log.Println("listening on port", *port)
+	log.Fatalln(http.ListenAndServe(":"+strconv.Itoa(*port), nil))
 }
