@@ -9,10 +9,8 @@ import (
 	"strings"
 	"sync"
 
-	qr "code.google.com/p/rsc/qr"
+	"code.google.com/p/rsc/qr"
 )
-
-var _ = qr.Encode
 
 // WIFI:S:<SSID>;T:<WPA|WEP|>;P:<password>;
 
