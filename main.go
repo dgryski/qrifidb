@@ -58,6 +58,8 @@ func (w *wifi) QRText() string {
 }
 
 var dbmu sync.RWMutex
+
+// TODO(dgryski): persist via boltdb
 var db = make(map[string]wifi)
 
 var bOK = []byte("OK")
@@ -125,6 +127,8 @@ func qrHandler(w http.ResponseWriter, r *http.Request) {
 
 	uri := r.RequestURI
 
+	// TODO(dgryski): handle /qr/ssid for an html page that renders the QR code with also instructions
+
 	if !strings.HasPrefix(uri, "/qr/") || !strings.HasSuffix(uri, ".png") {
 		http.NotFound(w, r)
 		return
@@ -164,8 +168,11 @@ func main() {
 		*port, _ = strconv.Atoi(p)
 	}
 
+	// TODO(dgryski): need handler on / with instructions
 	http.HandleFunc("/qr/", qrHandler)
+	// TODO(dgryski): allow listing, deleting access points
 	http.HandleFunc("/wifi", wifiHandler)
+	// TODO(dgryski): add a bookmarklet for use with update
 	http.HandleFunc("/update", updateHandler)
 
 	log.Println("listening on port", *port)
