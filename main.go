@@ -97,6 +97,30 @@ func wifiHandler(w http.ResponseWriter, r *http.Request) {
 	jenc.Encode(wifi)
 }
 
+func updateHandler(w http.ResponseWriter, r *http.Request) {
+
+	ssid := r.FormValue("ssid")
+
+	dbmu.RLock()
+	wifi, ok := db[ssid]
+	dbmu.RUnlock()
+
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+
+	pass := r.FormValue("password")
+
+	wifi.Password = pass
+
+	dbmu.Lock()
+	db[wifi.SSID] = wifi
+	dbmu.Unlock()
+
+	w.Write(bOK)
+}
+
 func qrHandler(w http.ResponseWriter, r *http.Request) {
 
 	uri := r.RequestURI
@@ -142,6 +166,7 @@ func main() {
 
 	http.HandleFunc("/qr/", qrHandler)
 	http.HandleFunc("/wifi", wifiHandler)
+	http.HandleFunc("/update", updateHandler)
 
 	log.Println("listening on port", *port)
 	log.Fatalln(http.ListenAndServe(":"+strconv.Itoa(*port), nil))
