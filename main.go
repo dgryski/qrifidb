@@ -12,7 +12,7 @@ import (
 	"strings"
 	"sync"
 
-	"code.google.com/p/rsc/qr"
+	"rsc.io/qr"
 )
 
 // WIFI:S:<SSID>;T:<WPA|WEP|>;P:<password>;
